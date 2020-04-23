@@ -1,14 +1,14 @@
 package clusterconnect
 
 import (
-	"log"
 	"os"
 	"path/filepath"
 
+	flag "github.com/spf13/pflag"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
-	flag "github.com/spf13/pflag"
+	log "k8s.io/klog"
 )
 
 // ConnectToCluster connects to a Kubernetes cluster. It can connect either via a local kubeconfig file or from within a Pod itself
@@ -25,11 +25,11 @@ func ConnectToCluster() (*kubernetes.Clientset, error) {
 	if local == true {
 		// Create the kubeconfig from the local kubeconfig file
 		kubeconfig := filepath.Join(os.Getenv("HOME"), ".kube", "config")
-		log.Println("Using kubeconfig: ", kubeconfig)
+		log.Infoln("Using kubeconfig: ", kubeconfig)
 		config, err = clientcmd.BuildConfigFromFlags("", kubeconfig)
 	} else {
 		// Generate a kubeconfig from within the cluster
-		log.Println("Using in-cluster config")
+		log.Infoln("Using in-cluster config")
 		config, err = rest.InClusterConfig()
 	}
 
